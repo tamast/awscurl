@@ -164,7 +164,7 @@ def make_request(method,
 
     # Step 6: Create payload hash (hash of the request body content). For GET
     # requests, the payload is an empty string ("").
-    payload_hash = hashlib.sha256(data).hexdigest()
+    payload_hash = hashlib.sha256(data.encode('utf-8')).hexdigest()
 
     # Step 7: Combine elements to create create canonical request
     canonical_request = (method + '\n' +
@@ -186,7 +186,7 @@ def make_request(method,
     string_to_sign = (algorithm + '\n' +
                       amzdate + '\n' +
                       credential_scope + '\n' +
-                      hashlib.sha256(canonical_request).hexdigest())
+                      hashlib.sha256(canonical_request.encode('utf-8')).hexdigest())
 
     log('\nSTRING_TO_SIGN = ' + string_to_sign)
     # ************* TASK 3: CALCULATE THE SIGNATURE *************
@@ -225,7 +225,7 @@ def make_request(method,
 
 
 def normalize_query_string(query):
-    kv = (map(str.strip, s.split("="))
+    kv = (list(map(str.strip, s.split("=")))
           for s in query.split('&')
           if len(s) > 0)
 
